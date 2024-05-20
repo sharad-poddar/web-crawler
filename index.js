@@ -14,19 +14,13 @@ function main(){
         process.exit(1);
     }
 
-
     //@dev here always an argv contains array which 
     //@dev at 0: there is absoulte path of node
     //@dev at 1: abosulute path of current file
     //@dev at 2: argument that we have sent in cli
-    // for(const arg of process.argv){
-    //     console.log(arg);
-    // }
-    // console.log('argument we are asumming -> ',process.argv[2]);
-
-    const baseUrl = process.argv[2];
-    console.log(`start crawling of website ${baseUrl}`);
-    crawlPage(baseUrl);
+    const website_url = process.argv[2];
+    console.log(`start crawling of website ${website_url}`);
+    crawlPage(website_url);
 
 }
 

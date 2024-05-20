@@ -1,19 +1,27 @@
 const { JSDOM } = require('jsdom')
 
 
-async function crawlPage(currentUrl){
-    console.log('actively crawling', currentUrl);
+async function crawlPage(website_url){
+    console.log('actively crawling', website_url);
     
-    let rightUrl = normalize_url(currentUrl);
-    console.log('normalize_url is working', rightUrl);
-    rightUrl = 'http://' + rightUrl;
+    let normalize_website_url = normalize_url(website_url);
+    console.log('normalize_url is working', normalize_website_url);
+    full_url = 'http://' + normalize_website_url;
 
-    const data = await fetch(rightUrl);
-    console.log(await data.text());
+    const data = await fetch(full_url);
+
+    contentType = data.headers.get('content-type');
+    if(!contentType.includes('text/html')){
+        console.log('content is not of type html or text');
+        return;
+    }
+
+    const data_text = await data.text();
     
-    //@issue
-    const baseUrl = get_urls_from_html(data, rightUrl);
-    console.log(baseUrl);
+    const all_website_urls = get_urls_from_html(data_text, full_url);
+
+    // getting all the urls from websites
+    console.log(all_website_urls);
 
 }
 
@@ -24,6 +32,7 @@ function get_urls_from_html(htmlBody, baseUrl){
     //@dev JSDOM is library used to get the dom's property on any html codebase
     const dom = new JSDOM(htmlBody);
     const linkElemets = dom.window.document.querySelectorAll('a');
+    
     for(const linkElement of linkElemets){
         try{
             const urlObj = new URL(linkElement.href);
@@ -39,16 +48,16 @@ function get_urls_from_html(htmlBody, baseUrl){
     return urls;
 }
 
-function normalize_url(url_string){
-    const url_stringg = url_string.toString().toLowerCase();
-    const url_convert = new URL(url_stringg);
-    const no_protocol = url_convert.hostname + url_convert.pathname;
+function normalize_url(website_url){
+    const new_website_url = website_url.toString().toLowerCase();
+    const url_convert = new URL(new_website_url);
+    const no_protocol_url = url_convert.hostname + url_convert.pathname;
     
     // returning expcet '/' in last and no protocol
-    if(no_protocol.length > 0 && no_protocol.slice(-1) == '/'){
-        return no_protocol.slice(0, -1);
+    if(no_protocol_url.length > 0 && no_protocol_url.slice(-1) == '/'){
+        return no_protocol_url.slice(0, -1);
     }
-    return no_protocol;
+    return no_protocol_url;
 }
 
 module.exports = { 
