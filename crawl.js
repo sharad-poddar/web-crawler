@@ -23,6 +23,10 @@ async function crawlPage(website_url){
     // getting all the urls from websites
     console.log(all_website_urls);
 
+    // again crawling the obtained links so all the pages are crawled of same site
+    // for(let website of all_website_urls){
+    //     crawlPage(website);
+    // }
 }
 
 
